@@ -3,6 +3,17 @@
 Created on Fri Jan 19 15:54:25 2018
 
 @author: fjehlik
+
+
+Model Evaluation and Validation
+
+In this project, machine learning concepts are applied on data collected for housing prices in the Boston, 
+Massachusetts area to predict the selling price of a new home. The data is explored to obtain important features 
+and descriptive statistics about the dataset. Next, the data is split into testing and training subsets, 
+and a suitable performance metric for this problem determined. From this analysis an optimal model that best generalizes for unseen data
+was selected. Also, a seperate script generates descriptive plots for analysis. 
+From this the optimal model on a new sample and compare the predicted selling price is compared.
+
 """
 
 # Import libraries necessary for this project
@@ -12,10 +23,7 @@ import sklearn.learning_curve as curves
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.cross_validation import ShuffleSplit, train_test_split
 
-# Import supplementary visualizations code visuals.py
-#import visuals as vs
-
-# Load the Boston housing dataset
+# Load the Boston housing dataset. Add a line of code to point to director where dataset is stored. 
 data = pd.read_csv('housing.csv')
 prices = data['MEDV']
 features = data.drop('MEDV', axis = 1)
@@ -26,19 +34,18 @@ print("Boston housing dataset has {} data points with {} variables each.".format
     This section calculates some base statistics for the Boston housing price dataset
 """
 #calculate statistics for the boston housing prices
-# TODO: Minimum price of the data
 minimum_price = min(prices)
 
-# TODO: Maximum price of the data
+# Maximum price of the data
 maximum_price = max(prices)
 
-# TODO: Mean price of the data
+# Mean price of the data
 mean_price = np.median(prices)
 
-# TODO: Median price of the data
+# Median price of the data
 median_price = np.mean(prices)
 
-# TODO: Standard deviation of prices of the data
+# Standard deviation of prices of the data
 std_price = np.std(prices)
 
 # Show the calculated statistics
@@ -52,7 +59,7 @@ print("Standard deviation of prices: ${:,.0f}".format(std_price))
 """DEFINE PERFORMACE METRIC:
     This section of code uses r^2 to fit the data and see if it is a good fit to the developed model"""
 
-# TODO: Import 'r2_score'
+# Import 'r2_score'
 from sklearn.metrics import r2_score
 
 def performance_metric(y_true, y_predict):
@@ -60,7 +67,7 @@ def performance_metric(y_true, y_predict):
         true and predicted values based on the metric chosen. """
     performance_score=r2_score(y_true,y_predict)
     
-    # TODO: Calculate the performance score between 'y_true' and 'y_predict'
+    # Calculate the performance score between 'y_true' and 'y_predict'
     score = performance_score
     
     # Return the score
@@ -74,7 +81,7 @@ X_train, X_test, y_train, y_test = train_test_split(features, prices, test_size 
 
 """FITTING THE MODEL:
     This section fits the model """
-    # TODO: Import 'make_scorer', 'DecisionTreeRegressor', and 'GridSearchCV'
+    # Import 'make_scorer', 'DecisionTreeRegressor', and 'GridSearchCV'
 
 from sklearn.metrics import make_scorer
 from sklearn.tree import DecisionTreeRegressor
@@ -92,19 +99,16 @@ def fit_model(X, y):
     # sklearn versiin 0.17: ShuffleSplit(n, n_iter=10, test_size=0.1, train_size=None, random_state=None)
     cv_sets = ShuffleSplit(X.shape[0], test_size=0.10, random_state=0)
     
-    # TODO: Create a decision tree regressor object
+    # Create a decision tree regressor object
     regressor = DecisionTreeRegressor()
 
-    # TODO: Create a dictionary for the parameter 'max_depth' with a range from 1 to 10
+    # Create a dictionary for the parameter 'max_depth' with a range from 1 to 10
     params = {'max_depth':[1,2,3,4,5,6,7,8,9,10]}
 
-    # TODO: Transform 'performance_metric' into a scoring function using 'make_scorer' 
+    # Transform 'performance_metric' into a scoring function using 'make_scorer' 
     scoring_fnc = make_scorer(performance_metric)
 
-    # TODO: Create the grid search cv object --> GridSearchCV()
-    # Make sure to include the right parameters in the object:
-    # (estimator, param_grid, scoring, cv) which have values 'regressor', 'params', 'scoring_fnc', and 'cv_sets' respectively.
-    #grid = GridSearchCV(regressor,params,scoring_fnc,cv_sets)
+    # Create the grid search cv object --> GridSearchCV()
     grid = GridSearchCV(regressor, param_grid=params, scoring=scoring_fnc, cv=cv_sets)
    
     # Fit the grid search object to the data to compute the optimal model
